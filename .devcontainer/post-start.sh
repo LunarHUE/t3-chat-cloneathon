@@ -45,5 +45,19 @@ else
     echo "'credsStore' not found in $CONFIG_FILE. No changes needed."
 fi
 
+# --- Check GitHub auth and prompt login if missing ---
+if command -v gh &> /dev/null; then
+  if ! gh auth status &> /dev/null; then
+    echo "⚠️  GitHub CLI is not authenticated."
+    echo "👉 Run 'gh auth login' inside the container to authenticate with GitHub."
+  else
+    echo "--- GitHub CLI already authenticated ---"
+    echo "--- Running gh auth setup-git ---"
+    gh auth setup-git || echo "gh auth setup-git failed or already configured"
+  fi
+else
+  echo "⚠️ GitHub CLI (gh) not found. Skipping auth setup."
+fi
+
 echo "--- Post-start script finished ---"
 exit 0
