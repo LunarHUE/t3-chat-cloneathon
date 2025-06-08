@@ -23,6 +23,7 @@
 # misc
 .DS_Store
 *.pem
+.pnpm-store/
 
 # debug
 npm-debug.log*
@@ -42,3 +43,4 @@ next-env.d.ts
 
 # Ignored for the template, you probably want to remove it:
 package-lock.json
+.pnpm-store/v10/files/00/00cc06fe80fe136b07a2bcc0829446f57762adb43bc05d667ada3fcd8e4bbece2847684cfea95a01e30db9c3868cc3c106c118513973c630b7a64aeec274c7
