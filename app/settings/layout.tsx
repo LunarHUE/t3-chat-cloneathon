@@ -5,10 +5,47 @@ import UserAvatar from "@/components/user-avatar";
 import MessageUsage from "@/components/message-usage";
 import KeyboardShortcuts from "@/components/keyboard-shortcuts";
 import SettingsBackButton from "@/components/settings-back-button";
+import SettingsPageWrapper from "./settings-page-wrapper";
 
 interface SettingsLayoutProps {
   children: React.ReactNode;
 }
+
+type NavItem = {
+  name: string;
+  href: string;
+};
+
+const NavItems: NavItem[] = [
+  {
+    name: "Subscription",
+    href: "/settings/subscription",
+  },
+  {
+    name: "Customization",
+    href: "/settings/customization",
+  },
+  {
+    name: "History & Sync",
+    href: "/settings/history",
+  },
+  {
+    name: "Models",
+    href: "/settings/models",
+  },
+  {
+    name: "API Keys",
+    href: "/settings/api-keys",
+  },
+  {
+    name: "Attachments",
+    href: "/settings/attachments",
+  },
+  {
+    name: "Contact Us",
+    href: "/settings/contact",
+  },
+];
 
 export default async function SettingsLayout({
   children,
@@ -62,15 +99,15 @@ export default async function SettingsLayout({
         </div>
         <div className="w-3/4 flex flex-col gap-6">
           <NavButtons>
-            <NavButton href="/settings/subscription">Subscription</NavButton>
-            <NavButton href="/settings/customization">Customization</NavButton>
-            <NavButton href="/settings/history">History & Sync</NavButton>
-            <NavButton href="/settings/models">Models</NavButton>
-            <NavButton href="/settings/api-keys">API Keys</NavButton>
-            <NavButton href="/settings/attachments">Attachments</NavButton>
-            <NavButton href="/settings/contact">Contact Us</NavButton>
+            {NavItems.map((item) => (
+              <NavButton key={item.href} href={item.href}>
+                {item.name}
+              </NavButton>
+            ))}
           </NavButtons>
-          {children}
+          <SettingsPageWrapper navItems={NavItems}>
+            {children}
+          </SettingsPageWrapper>
         </div>
       </div>
     </main>

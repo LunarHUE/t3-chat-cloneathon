@@ -7,6 +7,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { motion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/hooks/use-reduced-motion";
 
 const navButtonVariants = cva(
   "relative inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
@@ -50,18 +51,7 @@ const NavButtons = ({
   const [dimensions, setDimensions] = React.useState({ width: 0, left: 0 });
   const containerRef = React.useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(false);
-
-  React.useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setPrefersReducedMotion(mediaQuery.matches);
-
-    const handler = (e: MediaQueryListEvent) =>
-      setPrefersReducedMotion(e.matches);
-    mediaQuery.addEventListener("change", handler);
-
-    return () => mediaQuery.removeEventListener("change", handler);
-  }, []);
+  const prefersReducedMotion = useReducedMotion();
 
   React.useEffect(() => {
     const container = containerRef.current;
