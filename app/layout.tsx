@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { DM_Sans } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { ConvexAuthNextjsServerProvider } from "@convex-dev/auth/nextjs/server";
 import ConvexClientProvider from "@/components/convex-client-provider";
@@ -7,9 +8,9 @@ import { ThemeProvider } from "@/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TRPCReactProvider } from "@/trpc/react";
 
-const dmSans = DM_Sans({
+const proximaVara = localFont({
+  src: "./fonts/proxima_vara.woff2",
   variable: "--font-sans",
-  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -29,7 +30,7 @@ export default function RootLayout({
     <ConvexAuthNextjsServerProvider>
       <html lang="en" suppressHydrationWarning>
         <body
-          className={`${dmSans.className} ${dmSans.variable} antialiased h-screen overflow-hidden relative`}
+          className={`${proximaVara.className} ${proximaVara.variable} antialiased h-screen overflow-hidden relative`}
         >
           <ConvexClientProvider>
             <TRPCReactProvider>
