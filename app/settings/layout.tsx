@@ -51,63 +51,65 @@ export default async function SettingsLayout({
   children,
 }: SettingsLayoutProps) {
   return (
-    <main className="p-8 flex flex-col gap-8 mx-auto max-w-screen-xl">
-      <div className="flex flex-row justify-between items-center">
-        <SettingsBackButton />
-        <div className="flex flex-row gap-2 items-center">
-          <ThemeToggle variant="ghost" />
-          <SignOutButton />
+    <main className="min-h-screen background overflow-auto">
+      <div className="mx-auto max-w-screen-xl p-8 flex flex-col gap-8 ">
+        <div className="flex flex-row justify-between items-center">
+          <SettingsBackButton />
+          <div className="flex flex-row gap-2 items-center">
+            <ThemeToggle variant="ghost" />
+            <SignOutButton />
+          </div>
         </div>
-      </div>
-      <div className="flex gap-10">
-        <div className="w-1/4 flex flex-col gap-6">
-          <UserAvatar
-            user={{
-              name: "John Doe",
-              email: "john.doe@example.com",
-              image: "https://github.com/shadcn.png",
-              subscription: "free",
-            }}
-          />
-          <MessageUsage
-            resetsAt={new Date(Date.now() + 1000 * 60 * 60 * 24)}
-            standard={{
-              usage: 343,
-              limit: 1500,
-            }}
-            premium={{
-              usage: 53,
-              limit: 100,
-            }}
-          />
-          <KeyboardShortcuts
-            shortcuts={[
-              {
-                name: "Search",
-                shortcut: ["Ctrl", "K"],
-              },
-              {
-                name: "New Chat",
-                shortcut: ["Ctrl", "Shift", "O"],
-              },
-              {
-                name: "Toggle Sidebar",
-                shortcut: ["Ctrl", "B"],
-              },
-            ]}
-          />
-        </div>
-        <div className="w-3/4 flex flex-col gap-6">
-          <NavButtons>
-            {NavItems.map((item) => (
-              <NavButton key={item.href} href={item.href}>
-                {item.name}
-              </NavButton>
-            ))}
-          </NavButtons>
-          <SettingsPageWrapper navItems={NavItems}>
-            {children}
-          </SettingsPageWrapper>
+        <div className="flex gap-10">
+          <div className="w-1/4 flex flex-col gap-6">
+            <UserAvatar
+              user={{
+                name: "John Doe",
+                email: "john.doe@example.com",
+                image: "https://github.com/shadcn.png",
+                subscription: "pro",
+              }}
+            />
+            <MessageUsage
+              resetsAt={new Date(Date.now() + 1000 * 60 * 60 * 24)}
+              standard={{
+                usage: 343,
+                limit: 1500,
+              }}
+              premium={{
+                usage: 53,
+                limit: 100,
+              }}
+            />
+            <KeyboardShortcuts
+              shortcuts={[
+                {
+                  name: "Search",
+                  shortcut: ["Ctrl", "K"],
+                },
+                {
+                  name: "New Chat",
+                  shortcut: ["Ctrl", "Shift", "O"],
+                },
+                {
+                  name: "Toggle Sidebar",
+                  shortcut: ["Ctrl", "B"],
+                },
+              ]}
+            />
+          </div>
+          <div className="w-3/4 flex flex-col gap-6">
+            <NavButtons>
+              {NavItems.map((item) => (
+                <NavButton key={item.href} href={item.href}>
+                  {item.name}
+                </NavButton>
+              ))}
+            </NavButtons>
+            <SettingsPageWrapper navItems={NavItems}>
+              {children}
+            </SettingsPageWrapper>
+          </div>
         </div>
       </div>
     </main>

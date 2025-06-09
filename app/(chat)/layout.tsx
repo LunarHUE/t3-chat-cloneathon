@@ -1,5 +1,7 @@
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
+import { ChatNavButtons } from "@/components/chat-nav-buttons";
+import { SidebarButtons } from "@/components/sidebar-buttons";
 
 export default function ChatLayout({
   children,
@@ -7,12 +9,15 @@ export default function ChatLayout({
   children: React.ReactNode;
 }) {
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <main className="flex flex-col h-screen  w-full">
-        <SidebarTrigger />
-        {children}
-      </main>
-    </SidebarProvider>
+    <>
+      <SidebarProvider>
+        <SidebarButtons />
+        <AppSidebar />
+        <main className="flex flex-col h-screen w-full bg-chat-background border-chat-border border rounded-tl-xl relative">
+          {children}
+        </main>
+        <ChatNavButtons />
+      </SidebarProvider>
+    </>
   );
 }

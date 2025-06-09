@@ -49,9 +49,9 @@ export default function UserAvatar({ user }: UserAvatarProps) {
         onMouseLeave={() => setIsHovered(false)}
         onClick={handleCopyEmail}
       >
-        <div className="overflow-hidden h-6 relative flex justify-center">
+        <div className="overflow-hidden h-6 relative flex justify-center font-semibold">
           <motion.p
-            className="absolute top-0 flex items-center gap-3 text-accent/80"
+            className="absolute top-0 flex items-center gap-3 text-muted-foreground"
             initial={false}
             animate={{
               y: isHovered ? -4 : -24,
@@ -66,7 +66,7 @@ export default function UserAvatar({ user }: UserAvatarProps) {
           </motion.p>
           <motion.p
             initial={false}
-            className="text-accent/80"
+            className="text-muted-foreground"
             animate={{
               y: isHovered ? -24 : -3,
             }}
@@ -77,7 +77,7 @@ export default function UserAvatar({ user }: UserAvatarProps) {
       </div>
       <Badge
         variant={user.subscription === "free" ? "muted" : "default"}
-        className="text-xs text-muted-foreground rounded-full capitalize"
+        className="text-xs rounded-full capitalize font-semibold"
       >
         {user.subscription} Plan
       </Badge>

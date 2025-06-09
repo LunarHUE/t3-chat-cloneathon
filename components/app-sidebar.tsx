@@ -5,16 +5,30 @@ import {
   SidebarGroup,
   SidebarHeader,
 } from "@/components/ui/sidebar";
+import Link from "next/link";
+import { GradientButton } from "./ui/gradient-button";
 
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarHeader />
+      <SidebarHeader>
+        <div className="flex w-full items-center justify-center py-3">
+          <span className="text-xl font-semibold text-wordmark relative">
+            <Link href="/" className="inset-0 absolute w-full h-full" />
+            LH.chat
+          </span>
+        </div>
+        <Link href="/" className="w-full px-2">
+          <GradientButton className="w-full cursor-pointer font-semibold text-sm ">
+            New Chat
+          </GradientButton>
+        </Link>
+      </SidebarHeader>
       <SidebarContent>
         <SidebarGroup />
         <SidebarGroup />
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter></SidebarFooter>
     </Sidebar>
   );
 }
