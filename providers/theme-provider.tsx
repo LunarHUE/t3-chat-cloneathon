@@ -8,6 +8,7 @@ import { cn } from "../lib/utils";
 import { useEffect, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { useReducedMotion } from "../hooks/use-reduced-motion";
 
 export function ThemeProvider({
   children,
@@ -24,13 +25,14 @@ export function ThemeToggle({ className, ...props }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const ref = useRef<HTMLButtonElement>(null);
+  const prefersReducedMotion = useReducedMotion();
 
   // courtesy of https://medium.com/@AkashHamirwasia/full-page-theme-toggle-animation-with-view-transitions-api-43db0beed341
   const toggleDarkMode = async (theme: string) => {
     if (
       !ref.current ||
       !document.startViewTransition ||
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      prefersReducedMotion
     ) {
       setTheme(theme);
       return;
@@ -101,10 +103,10 @@ export function ThemeToggle({ className, ...props }: ThemeToggleProps) {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            initial={{ opacity: 0, rotate: -90 }}
+            initial={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, rotate: -90 }}
             animate={{ opacity: 1, rotate: 0 }}
-            exit={{ opacity: 0, rotate: 90 }}
-            transition={{ duration: 0.3 }}
+            exit={prefersReducedMotion ? { opacity: 1 } : { opacity: 0, rotate: 90 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.3 }}
           >
             <circle cx="12" cy="12" r="5" />
             <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
@@ -122,16 +124,16 @@ export function ThemeToggle({ className, ...props }: ThemeToggleProps) {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            initial={{ opacity: 0, rotate: -90, scale: 0.6 }}
+            initial={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, rotate: -90, scale: 0.6 }}
             animate={{ opacity: 1, rotate: 0, scale: 1 }}
-            exit={{ opacity: 0, rotate: 90, scale: 0.6 }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
+            exit={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, rotate: 90, scale: 0.6 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, ease: "easeInOut" }}
           >
             <circle cx="12" cy="12" r="5" />
             <motion.g
               initial={{ rotate: 0 }}
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              animate={prefersReducedMotion ? { rotate: 0 } : { rotate: 360 }}
+              transition={prefersReducedMotion ? { duration: 0 } : { duration: 20, repeat: Infinity, ease: "linear" }}
             >
               <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
             </motion.g>
@@ -149,16 +151,16 @@ export function ThemeToggle({ className, ...props }: ThemeToggleProps) {
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
-            initial={{ opacity: 0, rotate: 90, scale: 0.6 }}
+            initial={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, rotate: 90, scale: 0.6 }}
             animate={{ opacity: 1, rotate: 0, scale: 1 }}
-            exit={{ opacity: 0, rotate: -90, scale: 0.6 }}
-            transition={{ duration: 0.4, ease: "easeInOut" }}
+            exit={prefersReducedMotion ? { opacity: 1, scale: 1 } : { opacity: 0, rotate: -90, scale: 0.6 }}
+            transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.4, ease: "easeInOut" }}
           >
             <motion.path
               d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
-              initial={{ pathLength: 0 }}
+              initial={prefersReducedMotion ? { pathLength: 1 } : { pathLength: 0 }}
               animate={{ pathLength: 1 }}
-              transition={{ duration: 0.6, ease: "easeInOut" }}
+              transition={prefersReducedMotion ? { duration: 0 } : { duration: 0.6, ease: "easeInOut" }}
             />
           </motion.svg>
         )}
