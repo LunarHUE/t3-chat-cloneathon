@@ -1,36 +1,22 @@
-import { ArrowLeftIcon } from "lucide-react";
-import Link from "next/link";
 import { ThemeToggle } from "../../providers/theme-provider";
-import { Button } from "@/components/ui/button";
 import { SignOutButton } from "@/components/signout-button";
 import { NavButtons, NavButton } from "@/components/ui/nav-buttons";
 import UserAvatar from "@/components/user-avatar";
 import MessageUsage from "@/components/message-usage";
 import KeyboardShortcuts from "@/components/keyboard-shortcuts";
+import SettingsBackButton from "@/components/settings-back-button";
 
 interface SettingsLayoutProps {
   children: React.ReactNode;
-  searchParams?: Promise<{
-    rt: string;
-  }>;
 }
 
 export default async function SettingsLayout({
   children,
-  // searchParams,
 }: SettingsLayoutProps) {
-  // const sp = await searchParams;
-  // const { rt } = sp;
-
   return (
     <main className="p-8 flex flex-col gap-8 mx-auto max-w-screen-xl">
       <div className="flex flex-row justify-between items-center">
-        <Button asChild variant="ghost" size="lg">
-          <Link href={`/`}>
-            <ArrowLeftIcon className="h-4 w-4" />
-            <span>Back to chat</span>
-          </Link>
-        </Button>
+        <SettingsBackButton />
         <div className="flex flex-row gap-2 items-center">
           <ThemeToggle variant="ghost" />
           <SignOutButton />

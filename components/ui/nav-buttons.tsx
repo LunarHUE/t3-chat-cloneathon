@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { cva, type VariantProps } from "class-variance-authority";
 import { motion } from "framer-motion";
 
@@ -57,7 +57,7 @@ const NavButtons = ({
 
     const buttons = container.querySelectorAll("[data-nav-button]");
     buttons.forEach((button) => {
-      const href = button.getAttribute("href");
+      const href = button.getAttribute("data-href");
       if (href && pathname.includes(href)) {
         const rect = button.getBoundingClientRect();
         const containerRect = container.getBoundingClientRect();
@@ -104,13 +104,15 @@ const NavButton = React.forwardRef<
   React.ElementRef<typeof Link>,
   NavButtonProps
 >(({ className, variant, size, href, ...props }, ref) => {
+  const searchParams = useSearchParams();
   const pathname = usePathname();
   const isActive = pathname.includes(href);
 
   return (
     <Link
       ref={ref}
-      href={href}
+      data-href={href}
+      href={`${href}?rt=${searchParams.get("rt")}`}
       data-nav-button
       data-active={isActive}
       className={cn(
