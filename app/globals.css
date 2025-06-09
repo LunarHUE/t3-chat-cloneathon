@@ -1,4 +1,7 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+/*  ---break--- */
+@custom-variant dark (&:is(.dark *));
 
 :root {
   --background: oklch(0.9761 0.02 298.6892);
@@ -174,4 +177,13 @@ body {
 ::view-transition-new(root) {
   animation: none;
   mix-blend-mode: normal;
+}
+/*  ---break--- */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }
