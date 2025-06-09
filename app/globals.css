@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: oklch(0.9761 0 0);
+  --background: oklch(0.9761 0.02 298.6892);
   --foreground: oklch(0.3211 0 0);
   --card: oklch(1.0000 0 0);
   --card-foreground: oklch(0.3211 0 0);
@@ -36,7 +36,7 @@
   --font-sans: Inter, sans-serif;
   --font-serif: Inter, sans-serif;
   --font-mono: JetBrains Mono;
-  --radius: 0.25rem;
+  --radius: 0.4rem;
   --shadow-2xs: 0px 2px 4px 0px hsl(0 0% 0% / 0.10);
   --shadow-xs: 0px 2px 4px 0px hsl(0 0% 0% / 0.10);
   --shadow-sm: 0px 2px 4px 0px hsl(0 0% 0% / 0.20), 0px 1px 2px -1px hsl(0 0% 0% / 0.20);
@@ -45,7 +45,7 @@
   --shadow-lg: 0px 2px 4px 0px hsl(0 0% 0% / 0.20), 0px 4px 6px -1px hsl(0 0% 0% / 0.20);
   --shadow-xl: 0px 2px 4px 0px hsl(0 0% 0% / 0.20), 0px 8px 10px -1px hsl(0 0% 0% / 0.20);
   --shadow-2xl: 0px 2px 4px 0px hsl(0 0% 0% / 0.50);
-  --tracking-normal: 0px;
+  --tracking-normal: 0.015em;
   --spacing: 0.2rem;
 }
 
@@ -85,7 +85,7 @@
   --font-sans: Inter, sans-serif;
   --font-serif: Inter, sans-serif;
   --font-mono: JetBrains Mono;
-  --radius: 0.25rem;
+  --radius: 0.4rem;
   --shadow-2xs: 0px 2px 4px 0px hsl(0 0% 0% / 0.10);
   --shadow-xs: 0px 2px 4px 0px hsl(0 0% 0% / 0.10);
   --shadow-sm: 0px 2px 4px 0px hsl(0 0% 0% / 0.20), 0px 1px 2px -1px hsl(0 0% 0% / 0.20);
@@ -156,16 +156,22 @@
   --tracking-widest: calc(var(--tracking-normal) + 0.1em);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border;
   }
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  background: linear-gradient(160deg, oklch(from var(--background) calc(l + 0.10) c h), var(--background));
   font-family: Arial, Helvetica, sans-serif;
   letter-spacing: var(--tracking-normal);
+}
+
+/*  courtesy of https: //medium.com/%40AkashHamirwasia/full-page-theme-toggle-animation-with-view-transitions-api-43db0beed341 */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
 }
