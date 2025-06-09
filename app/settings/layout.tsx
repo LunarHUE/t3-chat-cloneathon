@@ -43,7 +43,7 @@ export default async function SettingsLayout({
               name: "John Doe",
               email: "john.doe@example.com",
               image: "https://github.com/shadcn.png",
-              subscription: "pro",
+              subscription: "free",
             }}
           />
           <MessageUsage
