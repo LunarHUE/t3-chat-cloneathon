@@ -13,9 +13,9 @@ export default function KeyboardShortcuts({
   shortcuts,
 }: KeyboardShortcutsProps) {
   return (
-    <Card className="">
+    <Card className="border-none">
       <CardHeader>
-        <CardTitle className="text-sm font-semibold">
+        <CardTitle className="text-sm text-foreground font-semibold">
           Keyboard Shortcuts
         </CardTitle>
       </CardHeader>
@@ -31,7 +31,9 @@ export default function KeyboardShortcuts({
 function KeyboardShortcut({ shortcut }: { shortcut: KeyboardShortcut }) {
   return (
     <div className="flex justify-between">
-      <span>{shortcut.name}</span>
+      <span className="text-foreground font-semibold text-sm">
+        {shortcut.name}
+      </span>
       <div className="flex gap-2">
         {shortcut.shortcut.map((key) => (
           <span

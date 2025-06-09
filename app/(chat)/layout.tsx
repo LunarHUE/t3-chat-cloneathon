@@ -13,7 +13,7 @@ export default function ChatLayout({
       <SidebarProvider>
         <SidebarButtons />
         <AppSidebar />
-        <main className="flex flex-col h-screen w-full rounded-tl-xl background border border-border/60 relative">
+        <main className="flex flex-col h-screen w-full bg-chat-background border-chat-border border rounded-tl-xl relative">
           {children}
         </main>
         <ChatNavButtons />

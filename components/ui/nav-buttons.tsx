@@ -14,7 +14,8 @@ const navButtonVariants = cva(
   {
     variants: {
       variant: {
-        default: "hover:text-foreground",
+        default:
+          "hover:bg-sidebar-accent/40 font-semibold text-md text-secondary-foreground",
         secondary: "hover:text-foreground",
         ghost: "hover:text-foreground",
         outline: "hover:text-foreground",
@@ -25,12 +26,12 @@ const navButtonVariants = cva(
         lg: "h-10 px-6 py-2",
       },
       active: {
-        true: "text-secondary-foreground",
+        true: "text-foreground",
         false: "text-muted-foreground",
       },
     },
     defaultVariants: {
-      variant: "ghost",
+      variant: "default",
       size: "default",
       active: false,
     },
@@ -74,13 +75,13 @@ const NavButtons = ({
     <div
       ref={containerRef}
       className={cn(
-        "bg-muted w-fit flex gap-2 rounded-lg p-1.5 border relative",
+        "bg-secondary/80 w-fit flex gap-2 rounded-lg p-1.5 relative",
         className,
       )}
       {...props}
     >
       <motion.div
-        className="absolute bg-secondary rounded-lg"
+        className="absolute bg-background rounded-lg"
         initial={false}
         animate={{
           width: dimensions.width,

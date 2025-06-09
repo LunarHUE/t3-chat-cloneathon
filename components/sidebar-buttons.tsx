@@ -49,7 +49,10 @@ export function SidebarButtons() {
                 {pathname === "/" ? (
                   <Plus className="w-4 h-4" />
                 ) : (
-                  <Link href="/" className={cn(pathname === "/" && "opacity-30")}>
+                  <Link
+                    href="/"
+                    className={cn(pathname === "/" && "opacity-30")}
+                  >
                     <Plus className="w-4 h-4" />
                   </Link>
                 )}

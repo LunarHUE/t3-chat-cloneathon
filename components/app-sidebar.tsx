@@ -12,17 +12,14 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <div className="flex w-full items-center justify-center py-4">
-          <span className="text-xl font-semibold text-accent relative">
+        <div className="flex w-full items-center justify-center py-3">
+          <span className="text-xl font-semibold text-wordmark relative">
             <Link href="/" className="inset-0 absolute w-full h-full" />
             LH.chat
           </span>
         </div>
         <Link href="/" className="w-full px-2">
-          <GradientButton
-            wrapperClassName="w-full"
-            className="w-full cursor-pointer font-semibold text-sm "
-          >
+          <GradientButton className="w-full cursor-pointer font-semibold text-sm ">
             New Chat
           </GradientButton>
         </Link>
