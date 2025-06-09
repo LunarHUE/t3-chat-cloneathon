@@ -50,11 +50,22 @@ const NavButtons = ({
   const [dimensions, setDimensions] = React.useState({ width: 0, left: 0 });
   const containerRef = React.useRef<HTMLDivElement>(null);
   const pathname = usePathname();
+  const [prefersReducedMotion, setPrefersReducedMotion] = React.useState(false);
+
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handler = (e: MediaQueryListEvent) =>
+      setPrefersReducedMotion(e.matches);
+    mediaQuery.addEventListener("change", handler);
+
+    return () => mediaQuery.removeEventListener("change", handler);
+  }, []);
 
   React.useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
-
     const buttons = container.querySelectorAll("[data-nav-button]");
     buttons.forEach((button) => {
       const href = button.getAttribute("data-href");
@@ -85,11 +96,15 @@ const NavButtons = ({
           width: dimensions.width,
           x: dimensions.left,
         }}
-        transition={{
-          type: "spring",
-          stiffness: 300,
-          damping: 30,
-        }}
+        transition={
+          prefersReducedMotion
+            ? { duration: 0 }
+            : {
+                type: "spring",
+                stiffness: 300,
+                damping: 30,
+              }
+        }
         style={{
           height: "calc(100% - 12px)",
           top: 6,
@@ -107,12 +122,14 @@ const NavButton = React.forwardRef<
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const isActive = pathname.includes(href);
-
+  const newHref = searchParams.get("rt")
+    ? `${href}?rt=${searchParams.get("rt")}`
+    : href;
   return (
     <Link
       ref={ref}
       data-href={href}
-      href={`${href}?rt=${searchParams.get("rt")}`}
+      href={newHref}
       data-nav-button
       data-active={isActive}
       className={cn(
