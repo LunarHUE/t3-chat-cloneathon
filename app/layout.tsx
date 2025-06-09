@@ -28,7 +28,7 @@ export default function RootLayout({
     <ConvexAuthNextjsServerProvider>
       <html lang="en" suppressHydrationWarning>
         <body
-          className={`${dmSans.className} ${dmSans.variable} antialiased h-screen`}
+          className={`${dmSans.className} ${dmSans.variable} antialiased h-screen overflow-hidden relative`}
         >
           <ConvexClientProvider>
             <ThemeProvider
