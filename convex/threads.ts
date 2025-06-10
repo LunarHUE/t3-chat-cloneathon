@@ -1,5 +1,5 @@
 import { v } from "convex/values";
-import { internalMutation } from "./_generated/server";
+import { internalMutation, mutation } from "./_generated/server";
 import { queryWithRLS } from "./rls";
 import { paginationOptsValidator } from "convex/server";
 
@@ -29,16 +29,8 @@ export const getThreadById = queryWithRLS({
   },
   handler: async (ctx, { threadId }) => {
     const thread = await ctx.db.get(threadId);
-    if (!thread) {
-      return {
-        data: null,
-        error: "Thread not found",
-      };
-    }
-
     return {
       data: thread,
-      error: null,
     };
   },
 });
@@ -76,12 +68,19 @@ export const updateThread = internalMutation({
     };
   },
 });
-export const createThread = internalMutation({
+export const createThread = mutation({
   args: {
     userId: v.id("users"),
     streamId: v.string(),
+    apiKey: v.string(),
   },
-  handler: async (ctx, { userId, streamId }) => {
+  handler: async (ctx, { userId, streamId, apiKey }) => {
+    if (apiKey !== process.env.API_KEY) {
+      return {
+        data: null,
+        error: "Invalid API key",
+      };
+    }
     const thread = await ctx.db.insert("threads", {
       title: "New Thread",
       messages: [],
@@ -95,6 +94,7 @@ export const createThread = internalMutation({
     };
   },
 });
+
 export const deleteThread = internalMutation({
   args: {
     threadId: v.id("threads"),
