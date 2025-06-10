@@ -1,9 +1,10 @@
+import { ConvexClient } from "convex/browser";
+import { env } from "@/env";
+
 import { z } from "zod";
 import { NextResponse } from "next/server";
-import { openai } from "@ai-sdk/openai";
-import { streamText } from "ai";
-import { StreamManager } from "../_lib/streaming";
-import { client } from "@/lib/convex-client";
+
+const convex = new ConvexClient(env.NEXT_PUBLIC_CONVEX_URL);
 
 const schema = z.object({
   convexSession: z.string(),
@@ -52,15 +53,11 @@ export async function POST(req: Request) {
     //   );
     // }
 
-    const result = streamText({
-      model: openai("gpt-4o"),
-      messages,
-    });
-    const streamManager = StreamManager.getInstance();
-    streamManager.addStream(streamId, result, "test-thread-id");
-    return result.toDataStreamResponse({
+    return new Response("Hello", {
       headers: {
-        "x-stream-id": streamId,
+        "Content-Type": "text/plain",
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
       },
     });
   } catch (error) {
@@ -69,5 +66,7 @@ export async function POST(req: Request) {
       { error: "Internal server error" },
       { status: 500 },
     );
+  } finally {
+    await convex.close();
   }
 }
