@@ -6,20 +6,36 @@ import { authTables } from "@convex-dev/auth/server";
 // requires indexes defined on `authTables`.
 // The schema provides more precise TypeScript types.
 
+// Define the schema for the messages table with convex.v since its required by convex.
+// Then we define the schemas for inserts, queries, etc with zod since we can then use a
+// zod schema to validate the data.
+
+const attachments = defineTable({
+  url: v.string(),
+  user: v.id("users"),
+}).index("by_url", ["url"]);
+
 const messages = defineTable({
   text: v.string(),
-  createdAt: v.number(),
+  attachments: v.array(v.id("attachments")),
+  author: v.union(v.id("users"), v.literal("system"), v.literal("model")),
+  thread: v.id("threads"),
+}).index("by_thread", ["thread"]);
 
-})
-
+// Shouldnt have to index by the user since we are using RLS to filter by the user.
 const threads = defineTable({
+  user: v.id("users"),
+  streamId: v.optional(v.string()),
   title: v.string(),
-  createdAt: v.number(),
   messages: v.array(v.id("messages")),
+  pinned: v.boolean(),
 })
+  .index("by_pinned", ["pinned"])
+  .index("by_title", ["title"]);
 
 export default defineSchema({
-    ...authTables,
-    messages,
-    threads,
+  ...authTables,
+  messages,
+  threads,
+  attachments,
 });
