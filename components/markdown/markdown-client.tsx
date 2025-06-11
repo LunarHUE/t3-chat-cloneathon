@@ -1,15 +1,11 @@
 "use client";
 
 import classNames from "classnames";
-import { MDXRemote, MDXRemoteSerializeResult } from 'next-mdx-remote';
-import Card from '@/components/layout/card';
-import Link from 'next/link';
+import { MDXRemote, MDXRemoteSerializeResult } from "next-mdx-remote";
 import { Suspense, useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { renderMarkdownString } from "@/actions/markdown";
 import React from "react";
-
-const components = { Card, Link };
 
 function LoadingComponent() {
   return (
@@ -35,16 +31,25 @@ function ErrorComponent({ error }: { error: Error }) {
   return <div>Error: {error.message}</div>;
 }
 
-function RenderMarkdownStringClient({ 
+function RenderMarkdownStringClient({
   markdown,
   ...props
-}: { 
-  markdown: string 
+}: {
+  markdown: string;
 } & React.HTMLAttributes<HTMLDivElement>) {
+  const proseClasses = classNames(
+    "prose",
+    "max-w-none",
+    "prose-h1:text-purple",
+    "prose-a:text-purple",
+    "prose-a:underline",
+    props.className,
+  );
 
-  const proseClasses = classNames('prose', 'max-w-none', 'prose-h1:text-purple', 'prose-a:text-purple', 'prose-a:underline', props.className);
-
-  const [mdxSource, setMDXSource] = useState<MDXRemoteSerializeResult<Record<string, unknown>, Record<string, unknown>> | null>(null);
+  const [mdxSource, setMDXSource] = useState<MDXRemoteSerializeResult<
+    Record<string, unknown>,
+    Record<string, unknown>
+  > | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
   useEffect(() => {
@@ -53,7 +58,7 @@ function RenderMarkdownStringClient({
         const result = await renderMarkdownString(markdown);
         setMDXSource(result);
       } catch (err) {
-        setError(err instanceof Error ? err : new Error('An error occurred'));
+        setError(err instanceof Error ? err : new Error("An error occurred"));
       }
     };
 

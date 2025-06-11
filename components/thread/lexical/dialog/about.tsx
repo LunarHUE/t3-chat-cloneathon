@@ -3,25 +3,22 @@ import {
   DialogContent,
   DialogDescription,
   DialogHeader,
-  DialogTitle
+  DialogTitle,
 } from "@/components/ui/dialog";
 import { DialogProps } from "@radix-ui/react-dialog";
 import RenderMarkdownStringClient from "@/components/markdown/markdown-client";
 
-function AboutDialog({
-  ...props
-}:
-  DialogProps
-) {
-  
-  const githubLink = "https://github.com/kddresearch/KDD-Wiki-NextJS/tree/main/src/components/editors/lexical";
+// Prolly dont need this
+function AboutDialog({ ...props }: DialogProps) {
+  // changed just incase it stays
+  const githubLink = "https://github.com/LunarHUE/t3-chat-cloneathon";
 
   const markdown = `
   The KDD Editor is created and maintained in house as a simple yet powerful
   Markdown WYSIWYG *(What You See Is What You Get)* editor.
 
   The code can be found on the github page, at
-  [/src/components/editors/lexical](${githubLink}).
+  [/components/thread/lexical](${githubLink}).
 
   This is built upon the amazing work of the Meta team, who created the
   Lexical editor. The Lexical editor is a powerful, flexible, and extensible
@@ -36,10 +33,10 @@ function AboutDialog({
         <DialogHeader>
           <DialogTitle>The KDD Editor</DialogTitle>
         </DialogHeader>
-          <RenderMarkdownStringClient markdown={markdown} />
+        <RenderMarkdownStringClient markdown={markdown} />
       </DialogContent>
     </Dialog>
-  )
+  );
 }
 
 export default AboutDialog;

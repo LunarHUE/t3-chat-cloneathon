@@ -1,39 +1,50 @@
 "use client";
 
-import {Suspense, useCallback, useEffect, useState} from 'react';
+import { Suspense, useCallback, useEffect, useState } from "react";
 import theme, { Disclaimer, populatePlainText } from "./theme";
 
-import { AutoFocusPlugin } from '@lexical/react/LexicalAutoFocusPlugin';
-import { InitialConfigType, LexicalComposer } from '@lexical/react/LexicalComposer';
-import { $getRoot, LexicalEditor } from 'lexical';
-import { RichTextPlugin } from '@lexical/react/LexicalRichTextPlugin';
-import { ContentEditable } from '@lexical/react/LexicalContentEditable';
-import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
-import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
-import MarkdownPlugin, { TOGGLE_DIRECT_MARKDOWN_COMMAND } from "./markdown-plugin";
-import ToolbarPlugin from './toolbar-plugin';
-import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
-import { Toaster } from "@/components/ui/sonner"
-import { toast } from "sonner"
+import { AutoFocusPlugin } from "@lexical/react/LexicalAutoFocusPlugin";
+import {
+  InitialConfigType,
+  LexicalComposer,
+} from "@lexical/react/LexicalComposer";
+import { $getRoot, LexicalEditor } from "lexical";
+import { RichTextPlugin } from "@lexical/react/LexicalRichTextPlugin";
+import { ContentEditable } from "@lexical/react/LexicalContentEditable";
+import { HistoryPlugin } from "@lexical/react/LexicalHistoryPlugin";
+import { LexicalErrorBoundary } from "@lexical/react/LexicalErrorBoundary";
+import MarkdownPlugin, {
+  TOGGLE_DIRECT_MARKDOWN_COMMAND,
+} from "./markdown-plugin";
+import ToolbarPlugin from "./toolbar-plugin";
+import { LinkPlugin } from "@lexical/react/LexicalLinkPlugin";
+import { toast } from "sonner";
 
-import { $convertFromMarkdownString, $convertToMarkdownString } from '@lexical/markdown';
+import {
+  $convertFromMarkdownString,
+  $convertToMarkdownString,
+} from "@lexical/markdown";
 
-import editorNodes from './nodes';
-import { ListPlugin } from './list-plugin';
+import editorNodes from "./nodes";
+import { ListPlugin } from "./list-plugin";
 
-import { Placeholder, prePopulate } from './theme';
-import CodeHighlightPlugin from './code-highlighting-plugin';
+import { Placeholder, prePopulate } from "./theme";
+import CodeHighlightPlugin from "./code-highlighting-plugin";
 // import ContextMenuPlugin from './plugins/context-menu-plugin';
-import dynamic from 'next/dynamic';
-import InsertCommandsPlugin from './insert-commands-plugin';
-import { SettingsContext, useSettings } from './settings-context-plugin';
+import dynamic from "next/dynamic";
+import InsertCommandsPlugin from "./insert-commands-plugin";
+import { SettingsContext, useSettings } from "./settings-context-plugin";
 // import SelectionToolbarPlugin from './plugins/selection-toolbar-plugin';
-import DebugToolbar from './debug-toolbar-plugin';
-import { KDD_TRANSFORMERS } from './markdown-plugin/transform';
-import KeyboardCommandsPlugin from './keyboard-commands-plugin';
+import DebugToolbar from "./debug-toolbar-plugin";
+import { KDD_TRANSFORMERS } from "./markdown-plugin/transform";
+import KeyboardCommandsPlugin from "./keyboard-commands-plugin";
 // import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
-import { $createMakrdownEditorCodeNode, $isMakrdownEditorCodeNode } from './markdown-node';
-import SlashCommandPlugin from './slash-plugin';
+import {
+  $createMakrdownEditorCodeNode,
+  $isMakrdownEditorCodeNode,
+} from "./markdown-node";
+import SlashCommandPlugin from "./slash-plugin";
+import { cn } from "@/lib/utils";
 // import { EditLinkPlugin } from './plugins/edit-link-plugin';
 
 interface MarkdownEditorProps {
@@ -52,83 +63,93 @@ function Editor({
   useMarkdownShortcuts = true,
   disableMarkdown,
   onError,
-}: 
-  MarkdownEditorProps  
-) {
+}: MarkdownEditorProps) {
   const {
     setOption,
     settings: {
       isDebug,
       useSelectionToolbar,
       editInMarkdown,
-      disableContextMenu
+      disableContextMenu,
     },
   } = useSettings();
 
-  const populateMarkdownEditor = useCallback((prePopulate?: () => void) => {
-    let markdownString;
+  const populateMarkdownEditor = useCallback(
+    (prePopulate?: () => void) => {
+      let markdownString;
 
-    if (prePopulate) {
-      prePopulate();
-      markdownString = $convertToMarkdownString(KDD_TRANSFORMERS);
-    }
+      if (prePopulate) {
+        prePopulate();
+        markdownString = $convertToMarkdownString(KDD_TRANSFORMERS);
+      }
 
-    if (!editInMarkdown) {
-      setOption('editInMarkdown', true);
-    }
+      if (!editInMarkdown) {
+        setOption("editInMarkdown", true);
+      }
 
-    const root = $getRoot();
-    root
-      .clear()
-      .append(
-        $createMakrdownEditorCodeNode(markdownString ?? '')
-      );
-  }, [editInMarkdown, setOption]);
+      const root = $getRoot();
+      root.clear().append($createMakrdownEditorCodeNode(markdownString ?? ""));
+    },
+    [editInMarkdown, setOption],
+  );
 
   // console.log('editInMarkdown', editInMarkdown);
 
   const initialConfig = {
     editorState: usePrePopulated
-    ? editInMarkdown
-      ? () => populateMarkdownEditor(() => prePopulate())
-      : () => prePopulate()
-    : editInMarkdown
-      ? () => populateMarkdownEditor(() => $convertFromMarkdownString(markdown ?? '', KDD_TRANSFORMERS))
-      : () => $convertFromMarkdownString(markdown ?? '', KDD_TRANSFORMERS),
-    namespace: 'KDD-MD-Editor',
+      ? editInMarkdown
+        ? () => populateMarkdownEditor(() => prePopulate())
+        : () => prePopulate()
+      : editInMarkdown
+        ? () =>
+            populateMarkdownEditor(() =>
+              $convertFromMarkdownString(markdown ?? "", KDD_TRANSFORMERS),
+            )
+        : () => $convertFromMarkdownString(markdown ?? "", KDD_TRANSFORMERS),
+    namespace: "KDD-MD-Editor",
     nodes: [...editorNodes],
     theme: theme,
-    onError: onError
+    onError: onError,
   };
 
-  const proseClasses = 'relative prose max-w-none prose-h1:text-purple prose-a:text-purple prose-a:underline';
+  const proseClasses =
+    "relative prose max-w-none prose-h1:text-purple prose-a:text-purple prose-a:underline";
   const spellcheck = true;
 
   const contentEditable = (
     <ContentEditable
       id="lexical-text-editable"
-      className={`bg-white min-h-40 resize-none text-sm caret-darkGray relative outline-none mx-2 my-4 caret-current px-6 ${proseClasses}`}
+      className={cn(
+        "bg-chat-input-background rounded-t-xl py-2 min-h-40 resize-none text-sm caret-darkGray relative outline-none mx-2 px-6",
+        proseClasses,
+        true ? "caret-current" : "caret-transparent",
+      )}
       spellCheck={spellcheck}
     />
   );
-  
+
   // const editableContent = disableContextMenu ? contentEditable : (
   //   <ContextMenuPlugin spellcheck={spellcheck}>
   //     {contentEditable}
   //   </ContextMenuPlugin>
   // );
 
-  const editableContent = disableContextMenu ? contentEditable : contentEditable;
+  const editableContent = disableContextMenu
+    ? contentEditable
+    : contentEditable;
 
   return (
     <>
       {editInMarkdown && <Disclaimer />}
       <LexicalComposer initialConfig={initialConfig}>
-        <div id="lexical-KDD-Editor" className="bg-white text-black relative leading-5 font-normal text-left rounded-lg border-gray border">
+        <div
+          id="lexical-KDD-Editor"
+          className="bg-chat-background relative leading-5 font-normal text-left rounded-lg border-gray border"
+        >
           <ToolbarPlugin />
           <RichTextPlugin
             contentEditable={editableContent}
-            placeholder={<Placeholder/>}
+            placeholder={<Placeholder />}
             ErrorBoundary={LexicalErrorBoundary}
           />
           <HistoryPlugin />
@@ -140,16 +161,17 @@ function Editor({
           {/* <EditLinkPlugin /> */}
           <KeyboardCommandsPlugin />
           <SlashCommandPlugin />
-          <MarkdownPlugin useMarkdownShortcuts={useMarkdownShortcuts} onMardownContentChange={onMardownContentChange} />
+          <MarkdownPlugin
+            useMarkdownShortcuts={useMarkdownShortcuts}
+            onMardownContentChange={onMardownContentChange}
+          />
           {/* {useSelectionToolbar && <SelectionToolbarPlugin />} */}
           {isDebug && <DebugToolbar />}
-          <Toaster />
         </div>
       </LexicalComposer>
     </>
-
   );
-};
+}
 
 function Loading() {
   return <div>Loading editor... (enable javascript)</div>;
@@ -171,7 +193,7 @@ function TextEditor({
   disableMarkdown?: boolean;
 }) {
   const onError = (error: Error) => {
-    console.error('Lexical Error:', error);
+    console.error("Lexical Error:", error);
     toast(`An unexpected error occurred in the editor\n${error.message}`);
   };
 
@@ -188,10 +210,12 @@ function TextEditor({
         />
       </SettingsContext>
     </LexicalErrorBoundary>
-  )
+  );
 }
 
-const DynamicKDDEditor = dynamic(() => Promise.resolve(TextEditor), { ssr: false });
+// const DynamicKDDEditor = dynamic(() => Promise.resolve(TextEditor), {
+//   ssr: false,
+// });
 
 function ChatEditor({
   markdown,
@@ -200,6 +224,8 @@ function ChatEditor({
   useMarkdownShortcuts,
   showDisclaimer,
   disableMarkdown,
+  loadingComponent,
+  onMount,
 }: {
   markdown?: string;
   onMardownContentChange?: (newMarkdownContent: string) => void;
@@ -207,19 +233,32 @@ function ChatEditor({
   useMarkdownShortcuts?: boolean;
   showDisclaimer?: boolean;
   disableMarkdown?: boolean;
+  loadingComponent?: React.ReactNode;
+  onMount?: () => void;
 }) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    if (onMount) {
+      onMount();
+    }
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return loadingComponent || <Loading />;
+  }
+
   return (
-    <Suspense fallback={<Loading />}>
-      <DynamicKDDEditor
-        markdown={markdown}
-        onMardownContentChange={onMardownContentChange}
-        usePrePopulated={usePrePopulated}
-        useMarkdownShortcuts={useMarkdownShortcuts}
-        showDisclaimer={showDisclaimer}
-        disableMarkdown={disableMarkdown}
-      />
-    </Suspense>
+    <TextEditor
+      markdown={markdown}
+      onMardownContentChange={onMardownContentChange}
+      usePrePopulated={usePrePopulated}
+      useMarkdownShortcuts={useMarkdownShortcuts}
+      showDisclaimer={showDisclaimer}
+      disableMarkdown={disableMarkdown}
+    />
   );
 }
 
-export {ChatEditor};
+export { ChatEditor };

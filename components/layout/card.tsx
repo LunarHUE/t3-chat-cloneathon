@@ -1,3 +1,5 @@
+// wtf is this file i dont think we need it...
+
 import classNames from "classnames";
 import Link from "next/link";
 import { ReactNode } from "react";
@@ -19,25 +21,26 @@ function Card({
   link?: string;
   isFlex?: boolean;
 } & React.HTMLProps<HTMLDivElement>) {
-
-  const hasBackgroundColor = /bg-/.test(props.className || '');
+  const hasBackgroundColor = /bg-/.test(props.className || "");
 
   const baseClasses = classNames(
-    'p-5',
-    hasBackgroundColor ? '' : 'bg-white',
-    'text-lg',
-    'my-8',
-    'shadow-md',
-    'gap-5',
-    props.className
+    "p-5",
+    hasBackgroundColor ? "" : "bg-white",
+    "text-lg",
+    "my-8",
+    "shadow-md",
+    "gap-5",
+    props.className,
   );
 
   // Check if actions and link are provided without title
-  if (title === undefined && (actions !== undefined || link !== undefined)) 
-    throw new Error("Actions and Link can only be provided if title is provided");
+  if (title === undefined && (actions !== undefined || link !== undefined))
+    throw new Error(
+      "Actions and Link can only be provided if title is provided",
+    );
 
   const classes = classNames(baseClasses, {
-    'flex flex-col': isFlex,
+    "flex flex-col": isFlex,
   });
 
   const renderTitleBar = () => {
@@ -62,15 +65,19 @@ function Card({
 
   const renderSubTitle = () => {
     return (
-      <h2 className="text-xl lg:text-2xl font-semibold text-purple my-1">{subTitle}</h2>
+      <h2 className="text-xl lg:text-2xl font-semibold text-purple my-1">
+        {subTitle}
+      </h2>
     );
-  }
+  };
 
   const renderSmallTitle = () => {
     return (
-      <h3 className="text-lg lg:text-lg font-semibold text-darkgray my-1">{smallTitle}</h3>
+      <h3 className="text-lg lg:text-lg font-semibold text-darkgray my-1">
+        {smallTitle}
+      </h3>
     );
-  }
+  };
 
   return (
     <div {...props} className={classes}>

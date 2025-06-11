@@ -12,11 +12,7 @@ import {
   SELECTION_CHANGE_COMMAND,
   UNDO_COMMAND,
 } from "lexical";
-import {
-  useCallback,
-  useEffect,
-  useState
-} from "react";
+import { useCallback, useEffect, useState } from "react";
 import * as React from "react";
 import {
   Bold,
@@ -28,12 +24,9 @@ import {
   Bug,
   PictureInPicture2,
   Info,
-  SquareMousePointer
-} from "lucide-react"
-import {
-  ToggleGroup,
-  ToggleGroupItem,
-} from "@/components/ui/toggle-group"
+  SquareMousePointer,
+} from "lucide-react";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import KeyboardShortcutMenu from "./keyboard-shortcut-menu";
@@ -46,7 +39,7 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuTrigger
+  DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useSettings } from "../settings-context-plugin";
 import AboutDialog from "../dialog/about";
@@ -56,7 +49,7 @@ import {
   getItalicStyling,
   getLinkStyling,
   getStrikethroughStyling,
-  isCodeInSelection
+  isCodeInSelection,
 } from "../styles";
 import { FaMarkdown } from "react-icons/fa6";
 import { TOGGLE_DIRECT_MARKDOWN_COMMAND } from "../markdown-plugin";
@@ -64,7 +57,7 @@ import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
-  TooltipTrigger
+  TooltipTrigger,
 } from "@/components/ui/tooltip";
 
 const LowPriority = 1;
@@ -89,7 +82,7 @@ export default function ToolbarPlugin() {
   // Elements
   const [isElementsDisabled, setIsElementsDisabled] = useState(false);
 
-  const [showAboutDialog, setShowAboutDialog] = React.useState(false)
+  const [showAboutDialog, setShowAboutDialog] = React.useState(false);
 
   const getValue = () => {
     const values = [];
@@ -105,7 +98,7 @@ export default function ToolbarPlugin() {
       isDebug,
       useSelectionToolbar,
       editInMarkdown,
-      disableContextMenu
+      disableContextMenu,
     },
   } = useSettings();
 
@@ -180,17 +173,16 @@ export default function ToolbarPlugin() {
   }, [editor, updateToolbar]);
 
   return (
-    <div className="border-b mx-1 border-gray">
-      <div className="flex bg-white py-1 rounded-t-lg align-middle text-darkgray h-12 gap-1">
-
+    <div className="mx-1">
+      <div className="flex bg- py-1 rounded-t-lg align-middle text-darkgray h-12 gap-1">
         <KeyboardShortcutMenu
           open={keyboardShortcutsOpen}
           onOpenChange={setKeyboardShortcutsOpen}
         />
-          
-        <div className="" >
-          <Button 
-            variant={"ghost"} 
+
+        <div className="">
+          <Button
+            variant={"ghost"}
             size="icon"
             disabled={!canUndo}
             onClick={() => {
@@ -200,8 +192,8 @@ export default function ToolbarPlugin() {
             <Undo className="h-4 w-4" />
           </Button>
 
-          <Button 
-            variant={"ghost"} 
+          <Button
+            variant={"ghost"}
             size="icon"
             disabled={!canRedo}
             onClick={() => {
@@ -214,12 +206,8 @@ export default function ToolbarPlugin() {
 
         <Separator orientation="vertical" />
 
-        <ToggleGroup 
-          size={"sm"} 
-          type="multiple"
-          value={getValue()}
-        >
-          <ToggleGroupItem 
+        <ToggleGroup size={"sm"} type="multiple" value={getValue()}>
+          <ToggleGroupItem
             value="bold"
             aria-label="Toggle bold"
             onClick={() => {
@@ -229,8 +217,8 @@ export default function ToolbarPlugin() {
           >
             <Bold className="h-4 w-4" />
           </ToggleGroupItem>
-          <ToggleGroupItem 
-            value="italic" 
+          <ToggleGroupItem
+            value="italic"
             aria-label="Toggle italic"
             onClick={() => {
               editor.dispatchCommand(FORMAT_TEXT_COMMAND, "italic");
@@ -267,9 +255,7 @@ export default function ToolbarPlugin() {
           className="data-[shown=false]:hidden"
         />
 
-        <div className="grow">
-
-        </div>
+        <div className="grow"></div>
 
         <DropdownMenu modal={false}>
           <DropdownMenuTrigger asChild>
@@ -278,13 +264,11 @@ export default function ToolbarPlugin() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56" side="left">
-
             <DropdownMenuLabel>KDD Editor</DropdownMenuLabel>
 
-            
             <DropdownMenuItem
               onClick={() => {
-                setShowAboutDialog(true)
+                setShowAboutDialog(true);
               }}
             >
               <Info className="mr-2 h-4 w-4" />
@@ -299,13 +283,13 @@ export default function ToolbarPlugin() {
             <DropdownMenuCheckboxItem
               checked={isDebug}
               onCheckedChange={() => {
-                setOption("isDebug", !isDebug)
+                setOption("isDebug", !isDebug);
               }}
             >
               <Bug className="mr-2 h-4 w-4" />
               <span>Debug</span>
             </DropdownMenuCheckboxItem>
-            
+
             {/* Edit in Markdown */}
             {/* TODO: Fix the mouseover issue */}
             <TooltipProvider delayDuration={250}>
@@ -315,8 +299,11 @@ export default function ToolbarPlugin() {
                     checked={editInMarkdown}
                     onCheckedChange={() => {
                       const value = !editInMarkdown;
-                      setOption("editInMarkdown", value)
-                      editor.dispatchCommand(TOGGLE_DIRECT_MARKDOWN_COMMAND, value);
+                      setOption("editInMarkdown", value);
+                      editor.dispatchCommand(
+                        TOGGLE_DIRECT_MARKDOWN_COMMAND,
+                        value,
+                      );
                     }}
                   >
                     <FaMarkdown className="mr-2 h-4 w-4" />
@@ -328,21 +315,21 @@ export default function ToolbarPlugin() {
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            
+
             {/* Disable Context Menu */}
 
             <TooltipProvider delayDuration={250}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                <DropdownMenuCheckboxItem
-                  checked={disableContextMenu}
-                  onCheckedChange={() => {
-                    setOption("disableContextMenu", !disableContextMenu)
-                  }}
-                >
-                  <SquareMousePointer className="mr-2 h-4 w-4" />
-                  <span>Disable Context Menu</span>
-                </DropdownMenuCheckboxItem>
+                  <DropdownMenuCheckboxItem
+                    checked={disableContextMenu}
+                    onCheckedChange={() => {
+                      setOption("disableContextMenu", !disableContextMenu);
+                    }}
+                  >
+                    <SquareMousePointer className="mr-2 h-4 w-4" />
+                    <span>Disable Context Menu</span>
+                  </DropdownMenuCheckboxItem>
                 </TooltipTrigger>
                 <TooltipContent side="left">
                   <p>Useful for Spellchecking Support</p>
@@ -357,7 +344,7 @@ export default function ToolbarPlugin() {
             <DropdownMenuCheckboxItem
               checked={useSelectionToolbar}
               onCheckedChange={() => {
-                setOption("useSelectionToolbar", !useSelectionToolbar)
+                setOption("useSelectionToolbar", !useSelectionToolbar);
               }}
             >
               <PictureInPicture2 className="mr-2 h-4 w-4" />
@@ -367,7 +354,6 @@ export default function ToolbarPlugin() {
         </DropdownMenu>
 
         <AboutDialog open={showAboutDialog} onOpenChange={setShowAboutDialog} />
-
       </div>
     </div>
   );
