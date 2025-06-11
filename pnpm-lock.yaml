@@ -29,6 +29,9 @@ importers:
       '@lexical/list':
         specifier: ^0.32.1
         version: 0.32.1
+      '@lexical/mark':
+        specifier: ^0.32.1
+        version: 0.32.1
       '@lexical/markdown':
         specifier: ^0.32.1
         version: 0.32.1
