@@ -25,12 +25,16 @@ export const getThreads = queryWithRLS({
 
 export const getThreadById = queryWithRLS({
   args: {
-    threadId: v.id("threads"),
+    threadId: v.string(),
   },
   handler: async (ctx, { threadId }) => {
-    const thread = await ctx.db.get(threadId);
+    const thread = await ctx.db
+      .query("threads")
+      .withIndex("by_metadata_id", (q) => q.eq("metadata.id", threadId))
+      .first();
     return {
       data: thread,
+      error: null,
     };
   },
 });
@@ -40,14 +44,17 @@ export const getThreadById = queryWithRLS({
 
 export const updateThread = internalMutation({
   args: {
-    threadId: v.id("threads"),
+    threadId: v.string(),
     title: v.optional(v.string()),
     pinned: v.optional(v.boolean()),
     messages: v.optional(v.array(v.id("messages"))),
     streamId: v.optional(v.string()),
   },
   handler: async (ctx, { threadId, title, pinned, messages, streamId }) => {
-    const thread = await ctx.db.get(threadId);
+    const thread = await ctx.db
+      .query("threads")
+      .withIndex("by_metadata_id", (q) => q.eq("metadata.id", threadId))
+      .first();
     if (!thread) {
       return {
         data: null,
@@ -55,7 +62,7 @@ export const updateThread = internalMutation({
       };
     }
 
-    await ctx.db.patch(threadId, {
+    await ctx.db.patch(thread._id, {
       title,
       pinned,
       messages,
@@ -68,26 +75,32 @@ export const updateThread = internalMutation({
     };
   },
 });
+
 export const createThread = mutation({
   args: {
+    threadId: v.string(),
     userId: v.id("users"),
     streamId: v.string(),
     apiKey: v.string(),
   },
-  handler: async (ctx, { userId, streamId, apiKey }) => {
+  handler: async (ctx, { threadId, userId, streamId, apiKey }) => {
     if (apiKey !== process.env.API_KEY) {
       return {
         data: null,
         error: "Invalid API key",
       };
     }
-    const thread = await ctx.db.insert("threads", {
+
+    const thread = {
+      metadata: { id: threadId },
       title: "New Thread",
       messages: [],
       user: userId,
       pinned: false,
       streamId,
-    });
+    };
+
+    await ctx.db.insert("threads", thread);
     return {
       data: thread,
       error: null,
@@ -97,9 +110,25 @@ export const createThread = mutation({
 
 export const deleteThread = internalMutation({
   args: {
-    threadId: v.id("threads"),
+    threadId: v.string(),
   },
   handler: async (ctx, { threadId }) => {
-    await ctx.db.delete(threadId);
+    const thread = await ctx.db
+      .query("threads")
+      .withIndex("by_metadata_id", (q) => q.eq("metadata.id", threadId))
+      .first();
+    if (!thread) {
+      return {
+        data: null,
+        error: "Thread not found",
+      };
+    }
+
+    await ctx.db.delete(thread._id);
+
+    return {
+      data: threadId,
+      error: null,
+    };
   },
 });

@@ -3,7 +3,7 @@ import { queryWithRLS } from "./rls";
 
 export const getMessagesInThread = queryWithRLS({
   args: {
-    threadId: v.id("threads"),
+    threadId: v.string(),
   },
   handler: async (ctx, { threadId }) => {
     const messages = await ctx.db

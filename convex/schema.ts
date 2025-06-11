@@ -16,20 +16,33 @@ const attachments = defineTable({
 }).index("by_url", ["url"]);
 
 const messages = defineTable({
+  metadata: v.object({
+    id: v.string(),
+  }),
   text: v.string(),
   attachments: v.array(v.id("attachments")),
-  author: v.union(v.id("users"), v.literal("system"), v.literal("model")),
-  thread: v.id("threads"),
-}).index("by_thread", ["thread"]);
+  author: v.union(
+    v.literal("user"),
+    v.literal("system"),
+    v.literal("assistant"),
+  ),
+  thread: v.string(),
+})
+  .index("by_thread", ["thread"])
+  .index("by_metadata_id", ["metadata.id"]);
 
 // Shouldnt have to index by the user since we are using RLS to filter by the user.
 const threads = defineTable({
+  metadata: v.object({
+    id: v.string(),
+  }),
   user: v.id("users"),
   streamId: v.optional(v.string()),
   title: v.string(),
   messages: v.array(v.id("messages")),
   pinned: v.boolean(),
 })
+  .index("by_metadata_id", ["metadata.id"])
   .index("by_pinned", ["pinned"])
   .index("by_title", ["title"]);
 

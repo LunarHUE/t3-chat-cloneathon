@@ -22,21 +22,36 @@ async function rlsRules(ctx: QueryCtx) {
   return {
     messages: {
       insert: async (_, message) => {
-        const thread = await ctx.db.get(message.thread);
+        const thread = await ctx.db
+          .query("threads")
+          .withIndex("by_metadata_id", (q) =>
+            q.eq("metadata.id", message.thread),
+          )
+          .first();
         if (!thread) {
           return false;
         }
-        return identity !== null && thread.user === identity.tokenIdentifier;
+        return identity !== null && thread.user === identity.subject;
       },
       read: async (_, message) => {
-        const thread = await ctx.db.get(message.thread);
+        const thread = await ctx.db
+          .query("threads")
+          .withIndex("by_metadata_id", (q) =>
+            q.eq("metadata.id", message.thread),
+          )
+          .first();
         if (!thread) {
           return false;
         }
-        return identity !== null && thread.user === identity.tokenIdentifier;
+        return identity !== null && thread.user === identity.subject;
       },
       modify: async (_, message) => {
-        const thread = await ctx.db.get(message.thread);
+        const thread = await ctx.db
+          .query("threads")
+          .withIndex("by_metadata_id", (q) =>
+            q.eq("metadata.id", message.thread),
+          )
+          .first();
         if (!thread) {
           return false;
         }
@@ -51,10 +66,10 @@ async function rlsRules(ctx: QueryCtx) {
         return true;
       },
       read: async (_, thread) => {
-        return identity !== null && thread.user === identity.tokenIdentifier;
+        return identity !== null && thread.user === identity.subject;
       },
       modify: async (_, thread) => {
-        return identity !== null && thread.user === identity.tokenIdentifier;
+        return identity !== null && thread.user === identity.subject;
       },
     },
     attachments: {
@@ -65,10 +80,10 @@ async function rlsRules(ctx: QueryCtx) {
         return true;
       },
       read: async (_, attachment) => {
-        return identity !== null && attachment.user === identity.tokenIdentifier;
+        return identity !== null && attachment.user === identity.subject;
       },
       modify: async (_, attachment) => {
-        return identity !== null && attachment.user === identity.tokenIdentifier;
+        return identity !== null && attachment.user === identity.subject;
       },
     },
   } satisfies Rules<QueryCtx, DataModel>;

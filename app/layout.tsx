@@ -29,7 +29,7 @@ export default function RootLayout({
     <ConvexAuthNextjsServerProvider>
       <html lang="en" suppressHydrationWarning>
         <body
-          className={`${proximaVara.className} ${proximaVara.variable} antialiased h-screen overflow-hidden relative`}
+          className={`${proximaVara.className} ${proximaVara.variable} prose-ui antialiased h-screen overflow-hidden relative`}
         >
           <ConvexClientProvider>
             <TRPCReactProvider>

@@ -4,6 +4,25 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
+  /* --prose-td-borders: #eadef7;
+  --prose-th-borders: #d8c3ef;
+  --prose-pre-bg: #563271;
+  --prose-pre-code: #f2ebfa;
+  --prose-code: #492c61;
+  --prose-captions: #7b44ab;
+  --prose-quote-borders: #c4739d;
+  --prose-quotes: #492c61;
+  --prose-hr: #d8c3ef;
+  --prose-bullets: #c4739d;
+  --prose-counters: #c4739d;
+  --prose-bold: #492c61;
+  --prose-lead: #7b44ab;
+  --prose-headings: #563271;
+  --prose-body: #492c61;
+  --prose-links: #da006b;
+  --prose-kbd-shadows: #501854;
+  --prose-kbd: #111827; */
+
   --background: oklch(0.9281 0.0306 320.87);
   --background-end: oklch(0.902 0.0598 315.46);
   --foreground: oklch(0.3257 0.1161 325.0372);
@@ -63,6 +82,25 @@
 }
 
 .dark {
+  /* --prose-td-borders: #463854;
+  --prose-th-borders: #6d5d7f;
+  --prose-pre-bg: rgba(0, 0, 0, .5);
+  --prose-pre-code: #d8c3ef;
+  --prose-code: #fff;
+  --prose-kbd-shadows: #f9f8fb;
+  --prose-kbd: #fff;
+  --prose-captions: #bf9be4;
+  --prose-quote-borders: #dc749e;
+  --prose-quotes: #f2ebfa;
+  --prose-hr: #dc749e;
+  --prose-bullets: #dc749e;
+  --prose-counters: #dc749e;
+  --prose-bold: #f2ebfa;
+  --prose-links: #f472b6;
+  --prose-lead: #d8c3ef;
+  --prose-headings: #faf7fd;
+  --prose-body: #f2ebfa; */
+
   --background: oklch(0.2032 0.0221 333.53);
   --foreground: oklch(0.9677 0.0027 286.3502);
   --card: oklch(0.1387 0.0076 315.1220);

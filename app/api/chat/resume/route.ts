@@ -5,11 +5,10 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const streamId = searchParams.get("streamId");
   const convexSession = searchParams.get("convexSession");
-  const messageId = searchParams.get("messageId");
 
-  if (!streamId || !convexSession || !messageId) {
+  if (!streamId || !convexSession) {
     return NextResponse.json(
-      { error: "Stream ID, convexSession, and messageId are required" },
+      { error: "Stream ID and convexSession are required" },
       { status: 400 },
     );
   }

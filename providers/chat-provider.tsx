@@ -7,22 +7,18 @@ import React, {
   useCallback,
   ReactNode,
   useEffect,
+  useMemo,
 } from "react";
-import { Doc, type Id, type TableNames } from "@/convex/_generated/dataModel";
+import { Doc } from "@/convex/_generated/dataModel";
 import { api } from "@/convex/_generated/api";
 import { useQuery } from "convex/react";
-import { toast } from "sonner";
 
-type Message = Omit<Doc<"messages">, "_id" | "_creationTime" | "thread">;
-type PostMessage = Omit<Message, "author">;
+type Message = Omit<Doc<"messages">, "_id">;
+type PostMessage = Omit<Message, "author" | "_creationTime" | "thread">;
 
 export interface ChatContextType {
-  messages: Doc<"messages">[];
-  incomingMessage: string;
-  setMessages: (messages: Doc<"messages">[]) => void;
-  setIncomingMessage: (message: string) => void;
+  messages: Message[];
   postMessage: (threadId: string, message: PostMessage) => Promise<void>;
-  resumeChat: (streamId: string, messageId: string) => Promise<void>;
   isLoading: boolean;
 }
 
@@ -33,19 +29,44 @@ export function ChatProvider({
   threadId,
 }: {
   children: ReactNode;
-  threadId?: Id<"threads">;
+  threadId: string;
 }) {
-  // const data = useQuery(api.messages.getMessagesInThread, {
-  //   threadId,
-  // });
-  const [messages, setMessages] = useState<Doc<"messages">[]>([]);
-  const [incomingMessage, setIncomingMessage] = useState<string>("");
+  const queryResult = useQuery(api.messages.getMessagesInThread, {
+    threadId,
+  });
+  const [optimisticMessages, setOptimisticMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+
+  const messages = useMemo(() => {
+    if (!queryResult) return optimisticMessages;
+
+    const filteredOptimistic = optimisticMessages.filter(
+      (optMsg) =>
+        !queryResult.data.some(
+          (realMsg) =>
+            realMsg.author === optMsg.author &&
+            realMsg.metadata.id === optMsg.metadata.id &&
+            Math.abs(realMsg._creationTime - optMsg._creationTime) < 10000,
+        ),
+    );
+
+    return [...queryResult.data, ...filteredOptimistic].sort(
+      (a, b) => a._creationTime - b._creationTime,
+    );
+  }, [queryResult, optimisticMessages]);
 
   const postMessage = useCallback(
     async (threadId: string, message: PostMessage) => {
       setIsLoading(true);
       try {
+        const optimisticUserMessage: Message = {
+          ...message,
+          author: "user",
+          thread: threadId,
+          _creationTime: Date.now(),
+        };
+        setOptimisticMessages((prev) => [...prev, optimisticUserMessage]);
+        const nextMessageId = crypto.randomUUID();
         const response = await fetch("/api/chat", {
           method: "POST",
           headers: {
@@ -55,12 +76,7 @@ export function ChatProvider({
             convexSession: "TEST",
             messages: [
               ...messages.map((msg) => ({
-                role:
-                  msg.author === "model"
-                    ? "assistant"
-                    : msg.author === "system"
-                      ? "system"
-                      : "user",
+                role: msg.author,
                 content: msg.text,
               })),
               {
@@ -68,6 +84,7 @@ export function ChatProvider({
                 content: message.text,
               },
             ],
+            nextMessageId,
           }),
         });
 
@@ -75,21 +92,8 @@ export function ChatProvider({
           throw new Error(`HTTP error! status: ${response.status}`);
         }
 
-        // Add user message to local state
-        const userMessage: Doc<"messages"> = {
-          ...message,
-          author: "user" as Id<"users">,
-          thread: threadId as Id<"threads">,
-          _id: "NewMessage" as Id<"messages">,
-          _creationTime: Date.now(),
-        };
-        setMessages((prev) => [...prev, userMessage]);
-
-        // Handle streaming response
         const reader = response.body?.getReader();
         const decoder = new TextDecoder();
-        const assistantMessage = "";
-
         if (reader) {
           while (true) {
             const { done, value } = await reader.read();
@@ -97,33 +101,45 @@ export function ChatProvider({
 
             const chunk = decoder.decode(value);
             const lines = chunk.split("\n");
-
             for (const line of lines) {
               if (line.startsWith("0:")) {
                 try {
                   const data = JSON.parse(line.slice(2));
-                  setIncomingMessage((prev) => prev + data);
+                  setOptimisticMessages((prev) => {
+                    const existingAssistantMessage = prev.find(
+                      (msg) =>
+                        msg.author === "assistant" &&
+                        msg.metadata.id === `${nextMessageId}`,
+                    );
+
+                    if (existingAssistantMessage) {
+                      return prev.map((msg) =>
+                        msg.metadata.id === `${nextMessageId}`
+                          ? {
+                              ...msg,
+                              text: msg.text + data,
+                            }
+                          : msg,
+                      );
+                    }
+                    return [
+                      ...prev,
+                      {
+                        text: data,
+                        attachments: [],
+                        author: "assistant",
+                        thread: threadId,
+                        metadata: { id: `${nextMessageId}` },
+                        _creationTime: Date.now(),
+                      },
+                    ];
+                  });
                 } catch (e) {
                   console.error(e);
-                  // Ignore parsing errors for incomplete chunks
                 }
               }
             }
           }
-        }
-
-        // Add final assistant message to state
-        if (assistantMessage) {
-          const finalAssistantMessage: Doc<"messages"> = {
-            text: assistantMessage,
-            attachments: [],
-            author: "model",
-            thread: threadId as Id<"threads">,
-            _id: "NewMessage" as Id<"messages">,
-            _creationTime: Date.now(),
-          };
-          setMessages((prev) => [...prev, finalAssistantMessage]);
-          setIncomingMessage("");
         }
       } catch (error) {
         console.error("Error posting message:", error);
@@ -135,80 +151,25 @@ export function ChatProvider({
     [messages],
   );
 
-  const resumeChat = useCallback(
-    async (streamId: string, messageId: string) => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(
-          `/api/chat/resume?streamId=${streamId}&convexSession=${"test"}&messageId=${messageId}`,
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // Handle streaming response
-        const reader = response.body?.getReader();
-        const decoder = new TextDecoder();
-        let resumedMessage = "";
-
-        if (reader) {
-          while (true) {
-            const { done, value } = await reader.read();
-            if (done) break;
-
-            const chunk = decoder.decode(value);
-            const lines = chunk.split("\n");
-
-            for (const line of lines) {
-              if (line.startsWith("0:")) {
-                try {
-                  const data = JSON.parse(line.slice(2));
-                  if (data.type === "text-delta") {
-                    resumedMessage += data.textDelta;
-                    setIncomingMessage(resumedMessage);
-                  }
-                } catch (e) {
-                  console.error(e);
-                  // Ignore parsing errors for incomplete chunks
-                }
-              }
-            }
-          }
-        }
-
-        // Update the existing message or add as new message
-        if (resumedMessage) {
-          setIncomingMessage("");
-          // You might want to update an existing message here based on messageId
-          // For now, we'll treat it as a new message
-          const resumedAssistantMessage: Doc<"messages"> = {
-            text: resumedMessage,
-            attachments: [],
-            author: "model",
-            thread: threadId as Id<"threads">,
-            _id: "NewMessage" as Id<"messages">,
-            _creationTime: Date.now(),
-          };
-          setMessages((prev) => [...prev, resumedAssistantMessage]);
-        }
-      } catch (error) {
-        console.error("Error resuming chat:", error);
-        throw error;
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [],
-  );
+  useEffect(() => {
+    if (queryResult) {
+      setOptimisticMessages((prev) =>
+        prev.filter(
+          (optMsg) =>
+            !queryResult.data.some(
+              (realMsg) =>
+                realMsg.author === optMsg.author &&
+                Math.abs(realMsg._creationTime - optMsg._creationTime) < 5000 &&
+                realMsg.text === optMsg.text,
+            ),
+        ),
+      );
+    }
+  }, [queryResult]);
 
   const value: ChatContextType = {
     messages,
-    incomingMessage,
-    setMessages,
-    setIncomingMessage,
     postMessage,
-    resumeChat,
     isLoading,
   };
 

@@ -21,6 +21,7 @@ export default function ChatInput() {
     const message = {
       text: markdownContent,
       attachments: [],
+      metadata: { id: crypto.randomUUID() },
     };
     console.log("submitting", message);
     setMarkdownContent("");
