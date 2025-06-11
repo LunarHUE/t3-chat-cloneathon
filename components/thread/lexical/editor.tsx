@@ -11,28 +11,30 @@ import { ContentEditable } from '@lexical/react/LexicalContentEditable';
 import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import MarkdownPlugin, { TOGGLE_DIRECT_MARKDOWN_COMMAND } from "./markdown-plugin";
-// import ToolbarPlugin from './plugins/toolbar-plugin';
+import ToolbarPlugin from './toolbar-plugin';
 import { LinkPlugin } from '@lexical/react/LexicalLinkPlugin';
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner"
 
 import { $convertFromMarkdownString, $convertToMarkdownString } from '@lexical/markdown';
 
 import editorNodes from './nodes';
-import { ListPlugin } from './plugins/list-plugin';
+import { ListPlugin } from './list-plugin';
 
 import { Placeholder, prePopulate } from './theme';
-import CodeHighlightPlugin from './plugins/code-highlighting-plugin';
-import ContextMenuPlugin from './plugins/context-menu-plugin';
+import CodeHighlightPlugin from './code-highlighting-plugin';
+// import ContextMenuPlugin from './plugins/context-menu-plugin';
 import dynamic from 'next/dynamic';
-import InsertCommandsPlugin from './plugins/insert-commands-plugin';
-import { SettingsContext, useSettings } from './plugins/settings-context-plugin';
-import SelectionToolbarPlugin from './plugins/selection-toolbar-plugin';
-import DebugToolbar from './plugins/debug-toolbar-plugin';
-import { KDD_TRANSFORMERS } from './plugins/markdown-plugin/transform';
-import KeyboardCommandsPlugin from './plugins/keyboard-commands-plugin';
-import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
+import InsertCommandsPlugin from './insert-commands-plugin';
+import { SettingsContext, useSettings } from './settings-context-plugin';
+// import SelectionToolbarPlugin from './plugins/selection-toolbar-plugin';
+import DebugToolbar from './debug-toolbar-plugin';
+import { KDD_TRANSFORMERS } from './markdown-plugin/transform';
+import KeyboardCommandsPlugin from './keyboard-commands-plugin';
+// import { useLexicalComposerContext } from '@lexical/react/LexicalComposerContext';
 import { $createMakrdownEditorCodeNode, $isMakrdownEditorCodeNode } from './markdown-node';
-import SlashCommandPlugin from './plugins/slash-command-plugin';
-import { EditLinkPlugin } from './plugins/edit-link-plugin';
+import SlashCommandPlugin from './slash-plugin';
+// import { EditLinkPlugin } from './plugins/edit-link-plugin';
 
 interface MarkdownEditorProps {
   markdown?: string;
@@ -110,11 +112,13 @@ function Editor({
     />
   );
   
-  const editableContent = disableContextMenu ? contentEditable : (
-    <ContextMenuPlugin spellcheck={spellcheck}>
-      {contentEditable}
-    </ContextMenuPlugin>
-  );
+  // const editableContent = disableContextMenu ? contentEditable : (
+  //   <ContextMenuPlugin spellcheck={spellcheck}>
+  //     {contentEditable}
+  //   </ContextMenuPlugin>
+  // );
+
+  const editableContent = disableContextMenu ? contentEditable : contentEditable;
 
   return (
     <>
@@ -133,12 +137,13 @@ function Editor({
           <InsertCommandsPlugin />
           <CodeHighlightPlugin />
           <LinkPlugin />
-          <EditLinkPlugin />
+          {/* <EditLinkPlugin /> */}
           <KeyboardCommandsPlugin />
           <SlashCommandPlugin />
           <MarkdownPlugin useMarkdownShortcuts={useMarkdownShortcuts} onMardownContentChange={onMardownContentChange} />
-          {useSelectionToolbar && <SelectionToolbarPlugin />}
+          {/* {useSelectionToolbar && <SelectionToolbarPlugin />} */}
           {isDebug && <DebugToolbar />}
+          <Toaster />
         </div>
       </LexicalComposer>
     </>
@@ -165,14 +170,9 @@ function TextEditor({
   showDisclaimer?: boolean;
   disableMarkdown?: boolean;
 }) {
-  const { toast } = useToast();
-
   const onError = (error: Error) => {
     console.error('Lexical Error:', error);
-    toast({
-      title: 'An unexpected error occurred in the editor',
-      description: error.message,
-    });
+    toast(`An unexpected error occurred in the editor\n${error.message}`);
   };
 
   return (
@@ -193,7 +193,7 @@ function TextEditor({
 
 const DynamicKDDEditor = dynamic(() => Promise.resolve(TextEditor), { ssr: false });
 
-function KDDEditor({
+function ChatEditor({
   markdown,
   onMardownContentChange,
   usePrePopulated,
@@ -222,4 +222,4 @@ function KDDEditor({
   );
 }
 
-export default KDDEditor;
+export {ChatEditor};

@@ -46,7 +46,7 @@ function CommandDialog({
     <Dialog {...props}>
       <DialogHeader className="sr-only">
         <DialogTitle>{title}</DialogTitle>
-        <DialogDescription>{description}</DialogDescription>
+        {/* <DialogDescription>{description}</DialogDescription> */}
       </DialogHeader>
       <DialogContent
         className={cn("overflow-hidden p-0", className)}
@@ -60,14 +60,21 @@ function CommandDialog({
   )
 }
 
-function CommandInput({
-  className,
-  ...props
-}: React.ComponentProps<typeof CommandPrimitive.Input>) {
+interface CommandInputProps<T extends boolean | undefined = undefined> extends Omit<React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>, 'value'> {
+  hideInput?: T;
+  value?: T extends true ? string : string | undefined;
+}
+
+function CommandInput<
+  T extends boolean | undefined = undefined
+>({ hideInput, className, ...props }: CommandInputProps<T>) {
   return (
     <div
       data-slot="command-input-wrapper"
-      className="flex h-9 items-center gap-2 border-b px-3"
+      className={cn(
+        "flex h-9 items-center gap-2 border-b px-3",
+        hideInput && "hidden"
+      )}
     >
       <SearchIcon className="size-4 shrink-0 opacity-50" />
       <CommandPrimitive.Input
