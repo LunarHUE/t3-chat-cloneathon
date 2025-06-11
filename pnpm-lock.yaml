@@ -101,12 +101,9 @@ importers:
       '@trpc/server':
         specifier: ^11.0.0
         version: 11.3.1(typescript@5.8.3)
-<<<<<<< HEAD
       ai:
         specifier: ^4.3.16
         version: 4.3.16(react@19.1.0)(zod@3.25.57)
-=======
->>>>>>> 3a72088 (Chat route created)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -146,15 +143,9 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-<<<<<<< HEAD
       prismjs:
         specifier: ^1.30.0
         version: 1.30.0
-=======
-      openai:
-        specifier: ^5.3.0
-        version: 5.3.0(zod@3.25.57)
->>>>>>> 3a72088 (Chat route created)
       react:
         specifier: ^19.0.0
         version: 19.1.0
@@ -164,12 +155,9 @@ importers:
       react-dom:
         specifier: ^19.0.0
         version: 19.1.0(react@19.1.0)
-<<<<<<< HEAD
       react-icons:
         specifier: ^5.5.0
         version: 5.5.0(react@19.1.0)
-=======
->>>>>>> 3a72088 (Chat route created)
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
@@ -3435,18 +3423,6 @@ packages:
     resolution: {integrity: sha512-gXah6aZrcUxjWg2zR2MwouP2eHlCBzdV4pygudehaKXSGW4v2AsRQUK+lwwXhii6KFZcunEnmSUoYp5CXibxtA==}
     engines: {node: '>= 0.4'}
 
-  openai@5.3.0:
-    resolution: {integrity: sha512-VIKmoF7y4oJCDOwP/oHXGzM69+x0dpGFmN9QmYO+uPbLFOmmnwO+x1GbsgUtI+6oraxomGZ566Y421oYVu191w==}
-    hasBin: true
-    peerDependencies:
-      ws: ^8.18.0
-      zod: ^3.23.8
-    peerDependenciesMeta:
-      ws:
-        optional: true
-      zod:
-        optional: true
-
   optionator@0.9.4:
     resolution: {integrity: sha512-6IpQ7mKUxRcZNLIObR0hz7lxsapSSIYNZJwXPGeF0mTVqGKFIXj1DQcMoT22S3ROcLyY/rz0PWaWZ9ayWmad9g==}
     engines: {node: '>= 0.8.0'}
@@ -4117,7 +4093,6 @@ packages:
     resolution: {integrity: sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==}
     engines: {node: '>=10'}
 
-<<<<<<< HEAD
   zod-to-json-schema@3.24.5:
     resolution: {integrity: sha512-/AuWwMP+YqiPbsJx5D6TfgRTc4kTLjsh5SOcd4bLsfUg2RcEXrFMJl1DGgdHy2aCfsIA/cr/1JM0xcB2GZji8g==}
     peerDependencies:
@@ -4129,11 +4104,6 @@ packages:
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
-=======
-  zod@3.25.57:
-    resolution: {integrity: sha512-6tgzLuwVST5oLUxXTmBqoinKMd3JeesgbgseXeFasKKj8Q1FCZrHnbqJOyiEvr4cVAlbug+CgIsmJ8cl/pU5FA==}
-
->>>>>>> 3a72088 (Chat route created)
 snapshots:
 
   '@ai-sdk/openai@1.3.22(zod@3.25.57)':
@@ -7663,10 +7633,6 @@ snapshots:
       define-properties: 1.2.1
       es-object-atoms: 1.1.1
 
-  openai@5.3.0(zod@3.25.57):
-    optionalDependencies:
-      zod: 3.25.57
-
   optionator@0.9.4:
     dependencies:
       deep-is: 0.1.4
@@ -8488,7 +8454,6 @@ snapshots:
 
   yocto-queue@0.1.0: {}
 
-<<<<<<< HEAD
   zod-to-json-schema@3.24.5(zod@3.25.57):
     dependencies:
       zod: 3.25.57
@@ -8496,6 +8461,3 @@ snapshots:
   zod@3.25.57: {}
 
   zwitch@2.0.4: {}
-=======
-  zod@3.25.57: {}
->>>>>>> 3a72088 (Chat route created)
