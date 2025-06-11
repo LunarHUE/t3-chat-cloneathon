@@ -1,0 +1,33 @@
+import { NextResponse } from "next/server";
+import { StreamManager } from "../../_lib/streaming";
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const streamId = searchParams.get("streamId");
+  const convexSession = searchParams.get("convexSession");
+  const messageId = searchParams.get("messageId");
+
+  if (!streamId || !convexSession || !messageId) {
+    return NextResponse.json(
+      { error: "Stream ID, convexSession, and messageId are required" },
+      { status: 400 },
+    );
+  }
+
+  // const session = await convex.query(api.auth.getSession, {
+  //   sessionId: convexSession as Id<"authSessions">,
+  // });
+
+  // if (!session) {
+  //   return NextResponse.json({ error: "Invalid session" }, { status: 401 });
+  // }
+
+  const streamManager = StreamManager.getInstance();
+  const result = streamManager.getStream(streamId);
+  console.log("RESUME,", streamManager.getStreamMap().keys());
+  if (!result) {
+    return NextResponse.json({ error: "Stream not found" }, { status: 404 });
+  }
+
+  return result.stream.toDataStreamResponse();
+}
